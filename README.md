@@ -33,3 +33,7 @@ So you need to put after these characters something like this
 
 It will put the **fileName.txt**, to **scripts** directory, and **textures.jpg** to **data\textures** directory.<br/>
 If these directories doesn't exist, it will automatically create them.
+
+## Usage
+
+You need to run updater with one **argument**, which is a local **version** of application.
