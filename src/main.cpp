@@ -1,14 +1,16 @@
 #include <QCoreApplication>
 #include <QtNetwork>
+#include "github_updater.h"
 #include <iostream>
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
+    GitHub_Updater updater("App Name");
 
-    QNetworkAccessManager manager;
+    if(!updater.startProcessing("link to download data, for example github api latest release")){
+        updater.printError("Couldn't update " + updater.appName());
+    }
 
-
-    std::cerr << "test\n";
     return 0;
 }
