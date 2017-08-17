@@ -14,7 +14,7 @@ class GitHub_Updater : public Updater
 public:
     GitHub_Updater(const QString& l_name);
 protected:
-    bool processData(std::unique_ptr<QNetworkReply>& l_reply);
+    Variant processData(std::unique_ptr<QNetworkReply>& l_reply);
 private:
     void processBodyText(QString& l_text);
 };

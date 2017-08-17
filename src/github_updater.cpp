@@ -11,15 +11,9 @@ GitHub_Updater::GitHub_Updater(const QString& l_name) : Updater(l_name)
 {
     addDefaultNamingConventions();
 
-    processBodyText(QString("Visible to user\n"
-                    "Visible to user2\n"
-                    "///"
-                    "\n" /// empty line
-                    "empty line\n" /// wrong line
-                    "Textures.jpg -> textures\\player"));
 }
 
-bool GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
+Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
 {
     QJsonObject object = QJsonDocument::fromJson(static_cast<QString>(reply->readAll()).toUtf8()).object();
 
@@ -33,12 +27,7 @@ bool GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
     processBodyText(bodyText);
 
     if(remoteVersion == version()){
-        std::cout << "Your version(";
-        setConsoleTextColor("blue");
-        std::cout << version().toStdString();
-        setConsoleTextColor("default");
-        std::cout << ") is actual" << std::endl;
-        return true;
+        return Variant::Same_Version;
     }
 
     std::cout << "Found a new version: ";   printGreenText(remoteVersion);
@@ -56,7 +45,6 @@ bool GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
 
         if(processAsset(assetName))
         {
-
             QStringList files;
             QString path;
 
@@ -88,12 +76,12 @@ bool GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
             reply.reset(m_manager.get(QNetworkRequest(QUrl(asset["browser_download_url"].toString()))));
             m_loop.exec(QEventLoop::ExcludeUserInputEvents);
 
-            if(reply->error() != QNetworkReply::NoError) return false;
+            if(reply->error() != QNetworkReply::NoError) return Variant::Error;
 
             reply.reset(m_manager.get(QNetworkRequest(reply->header(QNetworkRequest::LocationHeader).toString()))); /// binary file
             m_loop.exec(QEventLoop::ExcludeUserInputEvents);
 
-            if(reply->error() != QNetworkReply::NoError) return false;
+            if(reply->error() != QNetworkReply::NoError) return Variant::Error;
 
             QFile file;
             file.setFileName(path);
@@ -104,7 +92,7 @@ bool GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
         }
     }
 
-    return true;
+    return Variant::Success;
 }
 
 void GitHub_Updater::processBodyText(QString &l_text)

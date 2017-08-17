@@ -74,7 +74,6 @@ void Updater::deleteOldFiles()
         QFile file;
         while(!m_filesToDelete.empty()){
             file.setFileName(m_filesToDelete.first());
-            std::cout << "Deleting file: " << m_filesToDelete.first().toStdString() << std::endl;
             if(!file.remove()){
                 printError("Error when deleting file: " + file.fileName());
             }
@@ -148,15 +147,20 @@ bool Updater::startProcessing(const QString & l_link)
     m_loop.exec(QEventLoop::ExcludeUserInputEvents);
 
     if(reply->error() == QNetworkReply::NoError){
-        if(processData(reply)){
+        Variant variant = processData(reply);
+        if(variant == Variant::Success){
             deleteOldFiles();
             PrintSuccessMessage();
             return true;
         }
-        else{
+        else if(variant == Variant::Error){
             removeDownloadedData();
             printError("Error while processing data");
             return false;
+        }
+        else if(variant == Variant::Same_Version){
+            PrintSameVersionMessage();
+            return true;
         }
     }
     else{
@@ -177,6 +181,12 @@ bool Updater::processAsset(QString &l_name)
 
     if(l_name.contains(m_fileNaming.find(os)->second)){
         l_name.remove(l_name.indexOf("__"), l_name.length() - l_name.indexOf("__") - (l_name.length() - l_name.lastIndexOf('.')));
+        return true;
+    }
+    else{
+        for(auto & itr : m_fileNaming)
+            if(l_name.contains(itr.second)) /// if doesnt contains any naming_convinitions, return true, otherwise false
+                return false;
     }
     return true;
 }
@@ -235,4 +245,13 @@ void Updater::PrintSuccessMessage()
     setConsoleTextColor("default");
     std::cout << " to version ";
     printBlueText(m_remoteVersion);
+}
+
+void Updater::PrintSameVersionMessage()
+{
+    std::cout << "Your version(";
+    setConsoleTextColor("blue");
+    std::cout << version().toStdString();
+    setConsoleTextColor("default");
+    std::cout << ") is actual" << std::endl;
 }

@@ -11,6 +11,7 @@
 #endif // WIN_32
 
 enum class OperatingSystem {Win10_64 = 1, Win10_32, Win7_64, Win7_32, WinXP_64, WinXP_32, Unknown};
+enum class Variant {Success, Same_Version, Error};
 
 using FileNames = std::unordered_map<OperatingSystem, QString>;
 
@@ -49,6 +50,7 @@ private:
     void deleteOldFiles();
     void PrintStartMessage();
     void PrintSuccessMessage();
+    void PrintSameVersionMessage();
     void removeDownloadedData(); /// when in middle of downloading we will experience problems with internet connection
     OperatingSystem operatingSystem();
 protected:
@@ -56,7 +58,7 @@ protected:
     bool addDefaultNamingConventions();
     inline void setRemoteVersion(const QString& l_ver) { m_remoteVersion = l_ver; }
 
-    virtual bool processData(std::unique_ptr<QNetworkReply>& l_reply) = 0;
+    virtual Variant processData(std::unique_ptr<QNetworkReply>& l_reply) = 0;
 
     bool removeFile(const QString & l_name);
 

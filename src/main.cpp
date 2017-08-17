@@ -6,9 +6,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    GitHub_Updater updater("App Name");
+    GitHub_Updater updater("Your app name");
 
-    if(!updater.startProcessing("link to download data, for example github api latest release")){
+    if(!updater.startProcessing("Your link to download data")){
         updater.printError("Couldn't update " + updater.appName());
     }
 

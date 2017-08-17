@@ -45,3 +45,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+Makefile.Release
+*.Debug
+*.obj
+*.dll
+release/Updater.exe
+Makefile
+.qmake.stash
+Updater.pro.user
