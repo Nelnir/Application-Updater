@@ -20,7 +20,7 @@ or just simply leave it [default](https://github.com/Nelnir/Application-Updater/
 So, when you upload **file.exe** for example for **windows xp 32bit**, so you need to name it **file__WINXP_32.exe**.<br/>
 You can also combine names like that **file__WIN7_64_WINXP_64.exe**, so these OS will download that file.<br/>
 Or if you just want all systems to have specified file, just dont add any naming convention.<br/>
-After downloading, files will have their original names, due to this separator "**__**".
+After downloading, files will have their original names, due to this separator "**__**",<br/> and older files will be automatically deleted. 
 
 ### Moving files into a folder
 If you want a specific file to be moved into subdirectory you need to do some work in the description release.<br/>
@@ -36,4 +36,4 @@ If these directories doesn't exist, it will automatically create them.
 
 ## Usage
 
-You need to run updater with one **argument**, which is a local **version** of application.
+You need to run updater with one **argument**, which is a local **version** of application. Or provide a way of reading version. 
