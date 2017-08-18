@@ -20,7 +20,9 @@ or just simply leave it [default](https://github.com/Nelnir/Application-Updater/
 So, when you upload **file.exe** for example for **windows xp 32bit**, so you need to name it **file__WINXP_32.exe**.<br/>
 You can also combine names like that **file__WIN7_64_WINXP_64.exe**, so these OS will download that file.<br/>
 Or if you just want all systems to have specified file, just dont add any naming convention.<br/>
-After downloading, files will have their original names, due to this separator "**__**",<br/> and older files will be automatically deleted. 
+After downloading, files will have their original names, due to this separator "**__**",<br/> and older files will be automatically replaced.
+
+## Operations
 
 ### Moving files into a folder
 If you want a specific file to be moved into subdirectory you need to do some work in the description release.<br/>
@@ -33,6 +35,14 @@ So you need to put after these characters something like this
 
 It will put the **fileName.txt**, to **scripts** directory, and **textures.jpg** to **data\textures** directory.<br/>
 If these directories doesn't exist, it will automatically create them.
+
+### Deleting old files
+If you want to delete some files, you need to do something like this, after these "///" characters.
+
+**scripts.sc del .**<br/>
+**data.dat delete Data**<br/>
+
+It will delete **scripts.sc** from the **main** directory (don't forget about **dot**), and **data.dat**, from **Data** directory.
 
 ## Usage
 
