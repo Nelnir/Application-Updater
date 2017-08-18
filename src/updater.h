@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include "utils.h"
 
+#define WIN_32
+
 #ifdef WIN_32
 #include <Windows.h>
 #endif // WIN_32
