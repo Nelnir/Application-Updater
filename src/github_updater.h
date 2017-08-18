@@ -17,6 +17,7 @@ protected:
     Variant processData(std::unique_ptr<QNetworkReply>& l_reply);
 private:
     void processBodyText(QString& l_text);
+    void processRemainingOperations();
 };
 
 #endif // GITHUB_UPDATER_H

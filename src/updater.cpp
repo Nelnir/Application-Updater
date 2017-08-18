@@ -242,7 +242,7 @@ void Updater::PrintSuccessMessage()
     std::cout << "Successfully updated ";
     setConsoleTextColor("blue");
     std::cout << m_appName.toStdString();
-    setConsoleTextColor("default");
+    setConsoleTextColor("white");
     std::cout << " to version ";
     printBlueText(m_remoteVersion);
 }

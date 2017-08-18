@@ -10,7 +10,6 @@
 GitHub_Updater::GitHub_Updater(const QString& l_name) : Updater(l_name)
 {
     addDefaultNamingConventions();
-
 }
 
 Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
@@ -61,6 +60,7 @@ Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
                     if(!QDir(tmp).exists()) /// if path doesnt exist
                         QDir().mkpath(tmp); /// create it
                 }
+                m_operations.erase(itr);
             }
             else
             {
@@ -92,6 +92,8 @@ Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
         }
     }
 
+    processRemainingOperations();
+
     return Variant::Success;
 }
 
@@ -120,5 +122,22 @@ void GitHub_Updater::processBodyText(QString &l_text)
 
             m_operations.insert(file, qMakePair(operation, path));
         }
+    }
+}
+
+void GitHub_Updater::processRemainingOperations()
+{
+    while(m_operations.begin() != m_operations.end())
+    {
+        auto & itr = m_operations.begin();
+
+        if(itr->first.toLower() == "del" || itr->first.toLower() == "delete"){
+            auto & key = m_operations.keyBegin();
+            if(!QFile::remove(QString::fromStdString(Utils::getWorkingDirectory()) + (itr->second == "." ? *key : itr->second + '\\') + *key)){
+                printError("Error when removing file: " + itr->first);
+            }
+        }
+
+        m_operations.erase(itr);
     }
 }
