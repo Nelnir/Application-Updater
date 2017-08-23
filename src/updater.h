@@ -6,9 +6,8 @@
 #include <unordered_map>
 #include "utils.h"
 
-#define WIN_32
 
-#ifdef WIN_32
+#ifdef WIN32
 #include <Windows.h>
 #endif // WIN_32
 
@@ -31,7 +30,7 @@ private:
 
     FileNames m_fileNaming;
 
-#ifdef WIN_32
+#ifdef WIN32
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif // WIN_32
 public:

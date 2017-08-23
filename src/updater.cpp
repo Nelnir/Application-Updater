@@ -34,7 +34,7 @@ bool Updater::removeFile(const QString &l_name)
 
 void Updater::setConsoleTextColor(const QString &l_color)
 {
-#ifdef WIN_32
+#ifdef WIN32
     if(l_color == "red")
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
     else if(l_color == "green")
@@ -47,7 +47,7 @@ void Updater::setConsoleTextColor(const QString &l_color)
         SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     else if (l_color == "white")
         SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
-#endif // WIN_32
+#endif // WIN32
 }
 
 bool Updater::addDefaultNamingConventions()
