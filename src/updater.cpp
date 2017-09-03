@@ -170,7 +170,6 @@ bool Updater::startProcessing(const QString & l_link)
         if(variant == Variant::Success){
             deleteOldFiles();
             PrintSuccessMessage();
-            std::cin.get();
             return true;
         }
         else if(variant == Variant::Error){

@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    GitHub_Updater updater("App name");
+    GitHub_Updater updater("App Name");
 
     if(!updater.startProcessing("Latest release api")){
         updater.printError("Couldn't update " + updater.appName());

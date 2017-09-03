@@ -48,6 +48,7 @@ Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
         {
             QStringList files;
             QString path;
+            bool isItUpdater = false;
 
             auto itr = m_operations.find(assetName);
             /// if contains, need to check if this file exist in "path"(second value of pair) folder
@@ -61,8 +62,17 @@ Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
 
                     if(!QDir(tmp).exists()) /// if path doesnt exist
                         QDir().mkpath(tmp); /// create it
+
+                    m_operations.erase(itr);
                 }
-                m_operations.erase(itr);
+                else{
+                    files = QDir().entryList(QDir::NoDotAndDotDot | QDir::Files);
+                    path = QString::fromStdString(Utils::getWorkingDirectory()) + assetName;
+                }
+
+                if(itr->first.toLower() == "replace-updater"){
+                    isItUpdater = true;
+                }
             }
             else
             {
@@ -70,7 +80,7 @@ Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
                 path = QString::fromStdString(Utils::getWorkingDirectory()) + assetName;
             }
 
-            if(files.contains(assetName)) /// remove this file
+            if(files.contains(assetName) && !isItUpdater) /// remove this file
                 removeFile(path); /// delete original file, and replace it with new one
 
             std::cout << "Downloading file: ";  printYellowText(assetName);
@@ -87,7 +97,9 @@ Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
 
             QFile file;
             file.setFileName(path);
-            file.open(QIODevice::WriteOnly);
+            if(!file.open(QIODevice::WriteOnly)){
+                printError("Error when trying to open file: " + path);
+            }
             file.write(reply->readAll());
             file.flush();
             file.close();
