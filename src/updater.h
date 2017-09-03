@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <memory>
 
+#define XP_TARGET
 
 #ifdef WIN32
 #include <Windows.h>
@@ -44,6 +45,8 @@ private:
 
     FileNames m_fileNaming;
 
+    QString m_newUpdater;
+
 #ifdef WIN32
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif // WIN_32
@@ -61,6 +64,8 @@ public:
     void printGreenText(const QString& l_text);
     void printYellowText(const QString& l_text);
     void printWhiteText(const QString& l_text);
+    void UpdateItself();
+    bool UpdatingItself() { return !m_newUpdater.isEmpty(); }
 private:
     void deleteOldFiles();
     void PrintStartMessage();
@@ -76,8 +81,8 @@ protected:
     virtual Variant processData(std::unique_ptr<QNetworkReply>& l_reply) = 0;
 
     bool removeFile(const QString & l_name);
-
     bool processAsset(QString& l_name); /// checks if given asset name is for this OS
+    void UpdateItself(const QString& l_newUpdaterName);
 };
 
 #endif // UPDATER_H

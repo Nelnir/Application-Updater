@@ -9,11 +9,30 @@
 #include <QFileInfo>
 #include <iostream>
 #include <memory>
+#include <QProcess>
+#include "utils.h"
+
 Updater::Updater(const QString & l_appName) : m_version("???"), m_appName(l_appName)
 {
     QStringList arguments = QCoreApplication::arguments();
-    if(arguments.size() == 2)
-        m_version = arguments.last();
+    if(arguments.size() == 2){
+        if(arguments.last() == "DELETE-UPDATER"){
+            QFile::remove(QCoreApplication::applicationDirPath() + "\\updater.exe");
+            QFile::rename(QCoreApplication::applicationFilePath(), QCoreApplication::applicationDirPath() + "\\updater.exe");
+            return;
+        } else{
+            m_version = arguments.last();
+        }
+    }
+
+#ifdef WIN32
+    FreeConsole();
+    AllocConsole();
+    AttachConsole(GetCurrentProcessId());
+    freopen("CON", "w", stdout);
+    freopen("CON", "w", stderr);
+    freopen("CON", "r", stdin);
+#endif
 
     PrintStartMessage();
 
@@ -151,20 +170,24 @@ bool Updater::startProcessing(const QString & l_link)
         if(variant == Variant::Success){
             deleteOldFiles();
             PrintSuccessMessage();
+            std::cin.get();
             return true;
         }
         else if(variant == Variant::Error){
             removeDownloadedData();
             printError("Error while processing data");
+            std::cin.get();
             return false;
         }
         else if(variant == Variant::Same_Version){
             PrintSameVersionMessage();
+            std::cin.get();
             return true;
         }
     }
     else{
         std::cerr << "Unable to download data from server" << std::endl;
+        std::cin.get();
         return false;
     }
 
@@ -193,8 +216,8 @@ bool Updater::processAsset(QString &l_name)
 
 OperatingSystem Updater::operatingSystem()
 {
-    QString architecture = QSysInfo::currentCpuArchitecture();
-    if(architecture == "x86_64")
+    int wordSize = (int)QSysInfo::WordSize;
+    if(wordSize == 64)
     {
         switch(QSysInfo::windowsVersion())
         {
@@ -203,7 +226,7 @@ OperatingSystem Updater::operatingSystem()
         case QSysInfo::WV_WINDOWS7:     return OperatingSystem::Win7_64;
         }
     }
-    else if(architecture == "x86")
+    else if(wordSize == 32)
     {
         switch(QSysInfo::windowsVersion())
         {
@@ -254,4 +277,16 @@ void Updater::PrintSameVersionMessage()
     std::cout << version().toStdString();
     setConsoleTextColor("default");
     std::cout << ") is actual" << std::endl;
+}
+
+void Updater::UpdateItself(const QString &l_newUpdaterName)
+{
+    m_newUpdater = l_newUpdaterName;
+}
+
+void Updater::UpdateItself()
+{
+    QStringList arguments;
+    arguments << "DELETE-UPDATER";
+    QProcess::startDetached(QString::fromStdString(Utils::getWorkingDirectory()) + m_newUpdater, arguments);
 }

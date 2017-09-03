@@ -119,7 +119,8 @@ void GitHub_Updater::processBodyText(QString &l_text)
             QString file, operation, path;
             lineStream >> file >> operation >> path;
 
-            if(path.isEmpty() || !lineStream.atEnd() || file[0] == '/') // if more than 3 strings, ignore whole line
+            if((path.isEmpty() && operation.toLower() != "replace-updater") ||
+                    !lineStream.atEnd() || file[0] == '/') // if more than 3 strings, ignore whole line
                 continue;
 
             m_operations.insert(file, qMakePair(operation, path));
@@ -131,20 +132,22 @@ void GitHub_Updater::processRemainingOperations()
 {
     while(m_operations.begin() != m_operations.end())
     {
-        auto itr = m_operations.begin();
-        auto key = m_operations.keyBegin();
+        auto itr = m_operations.begin(); // operation
+        auto key = m_operations.keyBegin(); // file
 
         if(itr->first.toLower() == "del" || itr->first.toLower() == "delete"){
             if(!QFile::remove(QString::fromStdString(Utils::getWorkingDirectory()) + (itr->second == "." ? "" : itr->second + '\\') + *key)){
-                printError("Error when removing file: " + itr->first);
+                printError("Error when removing file: " + itr->second);
             }
         } else if(itr->first.toLower() == "run"){
             QStringList arguments;
             if(itr->second != ".")
                 arguments = itr->second.split('|');
-            if(!QProcess::startDetached(QString::fromStdString(Utils::getWorkingDirectory()) + *key, arguments, QCoreApplication::applicationDirPath())){
+            if(!QProcess::startDetached(QString::fromStdString(Utils::getWorkingDirectory()) + *key, arguments)){
                 printError("Error when starting file: " + * key);
             }
+        } else if(itr->first.toLower() == "replace-updater"){
+            UpdateItself(*key);
         }
 
         m_operations.erase(itr);
