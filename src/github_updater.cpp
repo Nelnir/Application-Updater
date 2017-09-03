@@ -4,7 +4,9 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QDir>
+#include <QProcess>
 #include <iostream>
+#include <QCoreApplication>
 #include "utils.h"
 
 GitHub_Updater::GitHub_Updater(const QString& l_name) : Updater(l_name)
@@ -47,7 +49,7 @@ Variant GitHub_Updater::processData(std::unique_ptr<QNetworkReply> & reply)
             QStringList files;
             QString path;
 
-            auto & itr = m_operations.find(assetName);
+            auto itr = m_operations.find(assetName);
             /// if contains, need to check if this file exist in "path"(second value of pair) folder
             /// otherwise in main folder
             if(itr != m_operations.end())
@@ -129,12 +131,19 @@ void GitHub_Updater::processRemainingOperations()
 {
     while(m_operations.begin() != m_operations.end())
     {
-        auto & itr = m_operations.begin();
+        auto itr = m_operations.begin();
+        auto key = m_operations.keyBegin();
 
         if(itr->first.toLower() == "del" || itr->first.toLower() == "delete"){
-            auto & key = m_operations.keyBegin();
-            if(!QFile::remove(QString::fromStdString(Utils::getWorkingDirectory()) + (itr->second == "." ? *key : itr->second + '\\') + *key)){
+            if(!QFile::remove(QString::fromStdString(Utils::getWorkingDirectory()) + (itr->second == "." ? "" : itr->second + '\\') + *key)){
                 printError("Error when removing file: " + itr->first);
+            }
+        } else if(itr->first.toLower() == "run"){
+            QStringList arguments;
+            if(itr->second != ".")
+                arguments = itr->second.split('|');
+            if(!QProcess::startDetached(QString::fromStdString(Utils::getWorkingDirectory()) + *key, arguments, QCoreApplication::applicationDirPath())){
+                printError("Error when starting file: " + * key);
             }
         }
 

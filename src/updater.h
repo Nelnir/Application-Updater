@@ -4,7 +4,7 @@
 #include <QNetworkAccessManager>
 #include <QEventLoop>
 #include <unordered_map>
-#include "utils.h"
+#include <memory>
 
 
 #ifdef WIN32
@@ -14,7 +14,21 @@
 enum class OperatingSystem {Win10_64 = 1, Win10_32, Win7_64, Win7_32, WinXP_64, WinXP_32, Unknown};
 enum class Variant {Success, Same_Version, Error};
 
+#ifdef XP_TARGET
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
+using FileNames = std::unordered_map<OperatingSystem, QString, EnumClassHash>;
+#endif
+
+#ifndef XP_TARGET
 using FileNames = std::unordered_map<OperatingSystem, QString>;
+#endif
 
 class Updater
 {
