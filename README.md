@@ -42,7 +42,16 @@ If you want to delete some files, you need to do something like this, after thes
 **scripts.sc del .**<br/>
 **data.dat delete Data**<br/>
 
-It will delete **scripts.sc** from the **main** directory (don't forget about **dot**), and **data.dat**, from **Data** directory.
+It will delete **scripts.sc** from the **main** directory (don't forget about **dot**), and **data.dat** from **Data** directory.
+
+### Running an exe
+If you want to run some file do:
+
+**file.exe run .**<br/>
+**updater.exe run register:4|test**<br/>
+**directory\file.exe run .**<br/>
+
+It will run **file.exe** from the **main** directory (**dot** means no arguments), and **updater.exe** from **main directory** with 2 arguments **register:4** and **test**. The 3rd file will run from the **directory** directory.
 
 ## Usage
 
