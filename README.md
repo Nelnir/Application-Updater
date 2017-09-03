@@ -53,6 +53,13 @@ If you want to run some file do:
 
 It will run **file.exe** from the **main** directory (**dot** means no arguments), and **updater.exe** from **main directory** with 2 arguments **register:4** and **test**. The 3rd file will run from the **directory** directory.
 
+### Replacing an updater
+If you want to replace your updater:
+
+**NewUpdater.exe replace-updater**<br/>
+
+It will replace updater with **NewUpdater.exe**.
+
 ## Usage
 
 You need to run updater with one **argument**, which is a local **version** of application. Or provide a way of reading version. 
