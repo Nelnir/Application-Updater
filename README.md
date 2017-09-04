@@ -58,7 +58,7 @@ If you want to replace your updater:
 
 **NewUpdater.exe replace-updater**<br/>
 
-It will replace updater with **NewUpdater.exe**.
+It will replace updater with **NewUpdater.exe**. After successful replace **NewUpdatere.exe** will be named **updater.exe**, so it's important to set different name for it, otherwise replacing will fail.
 
 ## Usage
 
